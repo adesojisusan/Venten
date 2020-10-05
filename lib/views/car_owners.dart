@@ -17,7 +17,19 @@ class CarOwners extends StatefulWidget {
 class _CarOwnersState extends State<CarOwners> {
   List owners = List();
   bool loading = true;
-  
+      loadCsv() async {
+    loading = true;
+    setState(() {});
+    var status = await Permission.storage.status;
+    if (status.isGranted) {
+      owners = await Util.filterCsv(widget.filter);
+    } else {
+      await Permission.storage.request();
+      loadCsv();
+    }
+    loading = false;
+    setState(() {});
+  }
 
   @override
   void initState() {
